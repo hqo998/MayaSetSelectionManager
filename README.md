@@ -1,27 +1,20 @@
-"""
-Save selection script by Charles von Kalm.
-Created and tested with maya 2023
+### **Maya Set Selection Manager**
+Created by Charles von Kalm
+**Installation:**
+Unzip folder in scripts directory, example:
 
-Description:
-A tool for creating/managing sets of objects for ease of use with exporting and transferring to different applications included.
+```
+*\Documents\maya\2023\scripts\SaveSelectionManager\ExportationAutomation.py
+*\Documents\maya\2023\scripts\SaveSelectionManager\saveSelection.py
 
-installation:
-
-Create folder named SaveSelectionManagerFolder it should be placed in Documents\maya\2023\scripts
-
-Place saveselection.py and exportationautomation.py inside folder
-
-
-
-
-Add to Python Maya Shelf:
-
+```
+Make a shelf button with python script:
+```
 from SaveSelectionManager import saveSelection
-
 from importlib import reload
-
 reload(saveSelection)
 
 selectionsaver = saveSelection.SelectionWindow()
 
 selectionsaver.show()
+```
