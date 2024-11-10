@@ -11,6 +11,7 @@ Place saveselection.py and exportationautomation.py inside folder
 
 
 Add to Python Maya Shelf:
+
 from SaveSelectionManager import saveSelection
 from importlib import reload
 reload(saveSelection)
