@@ -13,7 +13,7 @@ Saving
 Textfields, sets, and export fields are scene specific as fileInfo
 Amount of rows is saved to maya preferences as OptionVar
 Selection sets are saved to object attributes
-FilInfo doesnt prompt user to save to force saving after modification with to prevent dataloss - cmds.file(force=True, save=True, options="v=0")
+FilInfo doesn't prompt user to save to force saving after modification with to prevent dataloss - cmds.file(force=True, save=True, options="v=0")
 """
 
 
@@ -201,7 +201,7 @@ class selection(object):
 
         cmds.fileInfo(rm=f"fbx_directory_{self.index}")
         cmds.fileInfo(rm=f"home_directory_{self.index}")
-        cmds.file(force=True, save=True, options="v=0")
+        #cmds.file(force=True, save=True, options="v=0")
 
 
         self.fbxexport, self.homedir = None, None
@@ -221,7 +221,7 @@ class selection(object):
         #cmds.optionVar(clearArray=f"directory_{self.index}")
         cmds.fileInfo(rm=f"fbx_directory_{self.index}")
         cmds.fileInfo(rm=f"home_directory_{self.index}")
-        cmds.file(force=True, save=True, options="v=0")
+        #cmds.file(force=True, save=True, options="v=0")
 
         self.fbxexport, self.homedir = None, None
 
@@ -380,9 +380,9 @@ class SelectionWindow(object):
 
 
                 #substance painter button
-                cmds.button(label="To Painter", bgc=[.2, .4, .2],
+                cmds.button(label="Open Painter", bgc=[.2, .4, .2],
                             command=partial(self.doOpenPainter, i),
-                            ann="Opens set in Substance Painter \n To Painter will open new file.\nTo update mesh please use export and the reimport function in Painter")
+                            ann="Opens set in Substance Painter \n To Painter will open new file.\nTo update mesh please use export and the reimport function in Painter\n!Does not set up project settings!")
 
 
                 #home dir
@@ -398,9 +398,11 @@ class SelectionWindow(object):
 
             #Bottom of UI options
             cmds.setParent(column)
-            cmds.rowLayout(numberOfColumns=2)
+            cmds.rowLayout(numberOfColumns=3)
             cmds.button(label="close", command=self.close)
             cmds.button(label="Clear All", command=partial(self.doclearSelection, "All"))
+            cmds.button(label="Vertex Colour", command=self.doOpenVertexColour)
+
             cmds.setParent(column)
             cmds.text(label="selections persist after close")
 
@@ -411,6 +413,9 @@ class SelectionWindow(object):
 
     def doOpenPainter(self, index, *args):
         self.sel[index].OpenPainter()
+
+    def doOpenVertexColour(self, *args):
+        mel.eval('PolygonApplyColorOptions;')
 
     def doclearSelection(self, index, *args):
         if index == "All":
