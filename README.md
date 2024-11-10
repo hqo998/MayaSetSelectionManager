@@ -12,6 +12,8 @@ Create folder named SaveSelectionManagerFolder it should be placed in Documents\
 Place saveselection.py and exportationautomation.py inside folder
 
 
+
+
 Add to Python Maya Shelf:
 
 from SaveSelectionManager import saveSelection
