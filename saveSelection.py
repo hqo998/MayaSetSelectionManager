@@ -398,13 +398,14 @@ class SelectionWindow(object):
 
             #Bottom of UI options
             cmds.setParent(column)
-            cmds.rowLayout(numberOfColumns=3)
-            cmds.button(label="close", command=self.close)
+            cmds.rowLayout(numberOfColumns=4)
+            cmds.button(label="CLOSE", command=self.close, bgc=[.7,.3,.3])
             cmds.button(label="Clear All", command=partial(self.doclearSelection, "All"))
             cmds.button(label="Vertex Colour", command=self.doOpenVertexColour)
+            cmds.button(label="Export Selection", command=self.doMayaExportSelection)
 
             cmds.setParent(column)
-            cmds.text(label="selections persist after close")
+            cmds.text(label="Use Close box to close and save data")
 
             #range slider
             cmds.rowLayout(numberOfColumns=2)
@@ -441,6 +442,9 @@ class SelectionWindow(object):
     def domakeSelection(self, index, *args):
         length = self.sel[index].makeSelection()
         cmds.text(self.lengthText[index], edit=True, label=length)
+
+    def doMayaExportSelection(self, *args):
+        mel.eval('ExportSelectionOptions;')
 
     def doexportSelection(self, index, *args):
         print("doing export")
