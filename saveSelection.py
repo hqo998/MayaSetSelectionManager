@@ -304,6 +304,25 @@ class selection(object):
         else:
             cmds.warning("No Directory Set")
 
+    def Visibility(self, toggle):
+        restoreSelection = cmds.ls(selection=True)
+
+        self.loadSelection()
+        objects = cmds.ls(selection=True)
+        if toggle:
+            for object in objects:
+                cmds.setAttr(f"{object}.visibility", 1)
+        else:
+            for object in objects:
+                cmds.setAttr(f"{object}.visibility", 0)
+
+
+
+
+
+        for restore in restoreSelection:
+            cmds.select(restore, add=True)
+
 
 
 
@@ -350,6 +369,7 @@ class SelectionWindow(object):
             self.sel = []
             self.lengthText = []
             self.setNameFields = []
+            self.visibiltiyButts = []
             column = cmds.columnLayout() #stack elements vertically
 
             cmds.text(label="Save and reuse selections")
@@ -363,11 +383,32 @@ class SelectionWindow(object):
 
                 length = self.sel[i].retrieveSelection() #returns the length of existing list to use as user indicator
 
-                row = cmds.rowLayout(numberOfColumns=9)  # row have two wide.
+                row = cmds.rowLayout(numberOfColumns=10)  # row have two wide.
 
                 self.lengthText.append(cmds.text(label=length,
                                                  ann="Number of objects in selection.\nIf components selected number will be inaccurate due to index ranging.")) #make an accessible list of all the texts showing list size.
 
+
+
+                #Visibility UI
+                try:
+                    visStatus = cmds.fileInfo(f"Visibility_Set{i}", query=True)[0]
+                except:
+                    visStatus = 0
+
+                if int(visStatus) == -1:
+                    self.visibiltiyButts.append(cmds.button(label="👁", bgc=[.3, .3, .3],
+                                                            command=partial(self.doVisibilitySwitch, i),
+                                                            ann="Toggle Visibility: Off"))
+                    print("visibility be off")
+                else:
+                    self.visibiltiyButts.append(cmds.button(label="👁", bgc=[.8, .8, .8],
+                                                            command=partial(self.doVisibilitySwitch, i),
+                                                            ann="Toggle Visibility: On"))
+
+
+
+                #Selection Functions
                 cmds.button(label=f"Load", command=self.sel[i].loadSelection, bgc=[.4,.4,1], ann="Load selection")
                 cmds.button(label="Assign", command=partial(self.domakeSelection, i), bgc=[.3,1,.3], ann="Assign selected to set.") #partial allows command to pass arg to function
                 cmds.button(label="Clear", command=partial(self.doclearSelection, i), bgc=[1,.3,.3], ann="Clear selection set.")
@@ -415,6 +456,22 @@ class SelectionWindow(object):
     def doOpenPainter(self, index, *args):
         self.sel[index].OpenPainter()
 
+    def doVisibilitySwitch(self, index, doLoad):
+        if not doLoad:
+            ann = cmds.button(self.visibiltiyButts[index], query=True, ann=True)
+            if ann == "Toggle Visibility: On":
+                cmds.button(self.visibiltiyButts[index], edit=True, bgc=[.3, .3, .3], ann="Toggle Visibility: Off")
+                cmds.fileInfo(f"Visibility_Set{index}", -1)
+                self.sel[index].Visibility(False)
+            else:
+                cmds.button(self.visibiltiyButts[index], edit=True, bgc=[.8, .8, .8], ann="Toggle Visibility: On")
+                cmds.fileInfo(f"Visibility_Set{index}", 1)
+                self.sel[index].Visibility(True)
+
+        else:
+            return cmds.fileInfo(f"Visibility_Set{index}", query=True) or 1
+
+
     def doOpenVertexColour(self, *args):
         mel.eval('PolygonApplyColorOptions;')
 
@@ -427,7 +484,11 @@ class SelectionWindow(object):
 
                 # Wipe textfield and remove var.
                 cmds.fileInfo(rm=f"textfieldVar_{i}")
+                cmds.fileInfo(rm=f"Visibility_Set{i}")
                 cmds.textField(self.setNameFields[i], edit=True, text=f"Set_{i}")
+
+                cmds.button(self.visibiltiyButts[i], edit=True, bgc=[.8, .8, .8], ann="Toggle Visibility: On")
+                cmds.fileInfo(f"Visibility_Set{i}", 1)
         else:
             print(index)
             self.sel[index].clearSelection() #calls clear selection from class instance
@@ -436,6 +497,10 @@ class SelectionWindow(object):
             #Wipe textfield and remove var.
             #cmds.optionVar(clearArray=f"textfieldVar_{index}")
             cmds.fileInfo(rm=f"textfieldVar_{index}")
+            cmds.fileInfo(rm=f"Visibility_Set{index}")
+
+            cmds.button(self.visibiltiyButts[index], edit=True, bgc=[.8, .8, .8], ann="Toggle Visibility: On")
+            cmds.fileInfo(f"Visibility_Set{index}", 1)
 
             cmds.textField(self.setNameFields[index], edit=True, text=f"Set_{index}")
 
