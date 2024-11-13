@@ -1,6 +1,13 @@
 ### **Maya Set Selection Manager**
 Created by Charles von Kalm
+
+**Features**
+
+Assign Set, Load Set, Clear Set, Export Set, Name Set, Open Set in S3D Painter, Open Export Directory, Clear Export Directory.
+
+
 **Installation:**
+
 Unzip folder in scripts directory, example:
 
 ```
